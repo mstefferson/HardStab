@@ -23,9 +23,9 @@ MakeOP       = 1;
 Nx      = 32;
 Ny      = 32;
 Nm      = 32;
-L_rod   = 0.1;                  % Length of the rods
-Lx      = 1;               % Box length
-Ly      = 1;               % Box length
+L_rod   = 1;                  % Length of the rods
+Lx      = 10*L_rod;               % Box length
+Ly      = 10*L_rod;               % Box length
 AspctRt = 8;                  % L / W
 v0      = 0;                  %Driving velocity
 

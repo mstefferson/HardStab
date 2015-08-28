@@ -22,15 +22,15 @@ MakeOP       = 0;
 %%%%%%%%%%%%% Box and Rod Parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%
 Nx      = N(1);Ny = N(2); Nm = N(3);
 % L_rod   = 0.5;                  % Length of the rods
-Lx      = 1;               % Box length
-Ly      = 1;               % Box length
+Lx      = 10*L_rod;               % Box length
+Ly      = 10*L_rod;               % Box length
 AspctRt = 8;                  % L / W
 % v0      = 0;                  %Driving velocity
 
 %%%%%%%%%%%%%%%Time recording %%%%%%%%%%%%%%%%%%%%%%%%%%
 delta_t     = 1e-3; %time step
 % t_tot       = 10;   %total time
-t_record    = t_tot/200; %time interval for recording dynamics
+t_record    = t_tot/100; %time interval for recording dynamics
 ss_epsilon  = 1e-10;                          %steady state condition
 
 % The number of k-modes above and below k = 0 added as a perturbation 
