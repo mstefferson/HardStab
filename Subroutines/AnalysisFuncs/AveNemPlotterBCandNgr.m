@@ -4,7 +4,7 @@
 % for various grid points
 
 function AveNemPlotterBCandNgr(AveNemMatFit,AveNemMatPde,StdNemMatPde,...
-    bcVec,NgrVec,Lx,L_rod,v0, SaveMe,trial)
+    bcVec,NgrVec,L_box,v0, SaveMe,trial)
 
 %PLot it up
 
@@ -13,8 +13,8 @@ h(1) = figure;
 xlabel('bc'); ylabel('<N>');
 set(gca,'YLim',[0 1])
 titstr    = sprintf('Average Nematic order');
-Paramstr = sprintf('Lx/L_{rod}  = %.2f\nL_{rod} = %.2f\nv0 = %.2f',...
-    Lx/L_rod, L_rod, v0);
+Paramstr = sprintf('L_{box}/L_{rod}  = %.2f\nv_{0} = %.2f',...
+    L_box, v0);
 
 title(titstr);
 
@@ -24,7 +24,9 @@ for i=1:length(NgrVec)
     errorbar(gca,bcVec,AveNemMatPde(i,:),StdNemMatPde(i,:),'-')
 end
 
-plot(gca,bcVec,AveNemMatFit,'--')
+for i = 1:length(NgrVec)
+    plot(gca,bcVec,AveNemMatFit(i,:),'--')
+end
 %         keyboard
 
 legendCell1 = cellstr(num2str(NgrVec','N pde %d'));
@@ -35,7 +37,7 @@ legend(legendCell,'location','best')
 textbp(Paramstr)
 
 if SaveMe
-    filename = sprintf('PlotAveNem%.2f_Lrod%.2f_t%d.fig',v0,L_rod,trial);
+    filename = sprintf('PlotAveNem%.2f_Lbox%.2f_t%d.fig',v0,L_box,trial);
     savefig(gcf,filename);
 end
 
@@ -49,7 +51,7 @@ colorbar
 title(titstr);
 
 
-titstr    = sprintf('Average Nematic order PDE');
+titstr    = sprintf('Average Nematic order FIT');
 subplot(2,1,2)
 surf(bcVec,NgrVec,AveNemMatFit)
 xlabel('bc'); ylabel('Ngr');zlabel('<N>');
@@ -58,7 +60,7 @@ colorbar
 title(titstr);
 
 if SaveMe
-    filename = sprintf('SurfAveNem%.2f_Lrod%.2f_t%d.fig',v0,L_rod,trial);
+    filename = sprintf('SurfAveNem%.2f_Lbox%.2f_t%d.fig',v0,L_box,trial);
     savefig(gcf,filename);
 end
 end % End PlotMe

@@ -1,17 +1,7 @@
 % Input maker. Takes concentration and velocity as inputs
 
-function [FileInpt] = InptMkrHRICDfunc(bc,v0,L_rod,N,t_tot)
+function [FileInpt] = InptMkrHRICDfunc(bc,v0,L_box,N,t_tot,trial)
 % Input creater for HR2DrotMainDrIDCube
-%
-% All subroutines must be located in current directory
-% Add path
-
-% Now can change number of grid points in the x, y, phi direction
-Run  = 1; % Run main from here
-Move = 0; % Move files to a nice location
-
-%%%%%%%% Trial %%%%%%%%%%%%
-trial    = 53;
 
 %%%%%% Turn on/off interactions%%%%%%%%%
 Interactions = 1; 
@@ -21,9 +11,9 @@ MakeOP       = 0;
 
 %%%%%%%%%%%%% Box and Rod Parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%
 Nx      = N(1);Ny = N(2); Nm = N(3);
-% L_rod   = 0.5;                  % Length of the rods
-Lx      = 10*L_rod;               % Box length
-Ly      = 10*L_rod;               % Box length
+L_rod   = 1;                  % Length of the rods
+Lx      = L_box;               % Box length
+Ly      = L_box;               % Box length
 AspctRt = 8;                  % L / W
 % v0      = 0;                  %Driving velocity
 

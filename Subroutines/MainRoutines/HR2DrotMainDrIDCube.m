@@ -5,7 +5,8 @@
 %
 % Angle-indepent diffusion matrix. Approximate interactions.
 
-function [DenFinal, DenFTFinal, GridObj, ParamObj,TimeObj,DidIBreak,SteadyState] = ...
+function [DenFinal, DenFTFinal, GridObj, ParamObj,TimeObj,...
+    DidIBreak,SteadyState,MaxReldRho] = ...
     HR2DrotMainDrIDCube(InputFile)
 % Add paths (this should already be added, but just to be careful)
 % Save error messages in file
@@ -89,6 +90,7 @@ try
     DenFTFinal = DenRecObj.DensityFT_rec(:,:,:,end);
     DidIBreak  = DenRecObj.DidIBreak;
     SteadyState = DenRecObj.SteadyState;
+    MaxReldRho  = DenRecObj.MaxReldRho;
     
 %         keyboard
 

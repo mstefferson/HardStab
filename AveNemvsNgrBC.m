@@ -5,7 +5,7 @@ clear
 CurrentDir = pwd;
 addpath( genpath( CurrentDir) );
 
-PlotMe = 0;
+PlotMe = 1;
 SaveMe = 1;
 
 Nbc   = 2;   %Number of concentractions
@@ -28,8 +28,8 @@ Nc    = 10; % Number of coefficients in fit
 % Driving
 v0 = 0;
 
-% L_rod
-L_rod = 1;
+% L_rod sets length scale
+L_box = 1; % Should be a multiple of L_rod = 1;
 
 % Time
 t_tot = 1;
@@ -66,16 +66,17 @@ for i = 1:Ngr
     FinalDenRec = zeros(Nx,Ny,Nm,Nbc);
     %     keyboard
     
+    ticTemp = tic;
     for j = 1:Nbc
         % Calculate the distribution, rho, and sigma at a specific concentration
-        [FileInpt] = InptMkrHRICDfunc(bcVec(j),v0,L_rod, Nvec,t_tot);
-        [DenFinal_new, DenFTFinal_new,GridObj, ParamObj, TimeObj, DidIBreak,SteadyState] = ....
+        [FileInpt] = InptMkrHRICDfunc(bcVec(j),v0,L_box, Nvec,t_tot,trial);
+        [DenFinal_new, DenFTFinal_new,GridObj, ParamObj, TimeObj, ...
+            DidIBreak,SteadyState,MaxReldRho] = ....
             HR2DrotMainDrIDCube(FileInpt);
-        fprintf('Ngr = %.2f bc = %.2f DidIBreak = %d SteadyState = %d\n',...
-            NgrVec(i),bcVec(j),DidIBreak,SteadyState);
-        if j  == 1
-            
-        end
+        fprintf('Ngr = %.2f bc = %.2f\n',NgrVec(i),bcVec(j))
+        fprintf('DidIBreak = %d SteadyState = %d max dRho/Rho = %.2e \n',...
+            DidIBreak,SteadyState,MaxReldRho);
+        
         
         %Store
         FinalDenRec(:,:,:,j) = DenFinal_new;
@@ -95,40 +96,42 @@ for i = 1:Ngr
         f = DistBuilderExpCos2Dsing(Nc,GridObj.phi,Coeff_best);
         [~,~,~,~,NOP,~,~] = OpCPNCalc(1,1,f,GridObj.phi,0,0,GridObj.phi);
         AveNemMatFit (i,j) = NOP;
-        
-    end %end bc loop
-    if SaveMe
-        if i == 1
-            mkdir Outputs
-            DiaryStr = sprintf('DiarySingRunt%d.txt',trial);
-            diary(DiaryStr);
-            disp('NgrVec');disp(NgrVec);disp('bcVec');disp(bcVec);
-            disp('Params');disp(ParamObj);disp('Time');disp(TimeObj);
-            diary off
+        if SaveMe
+            if i == 1 && j == 1
+                mkdir Outputs
+                DiaryStr = sprintf('DiarySingRunt%d.txt',trial);
+                diary(DiaryStr);
+                disp('NgrVec');disp(NgrVec);disp('bcVec');disp(bcVec);
+                disp('Params');disp(ParamObj);disp('Time');disp(TimeObj);
+                diary off
+                SaveStr = sprintf('OPvsGridBCmatsBcNum%dNnum%d',Nbc,Ngr);
+            end
+           
+            save(SaveStr,'AveNemMatFit', 'AveNemMatPde','StdNemMatPde',...
+                'bcVec','NgrVec','L_box','v0', 'SaveMe','trial')
         end
-        SaveStr = sprintf('OPvsGridBCmatsBcNum%dNnum%d',Nbc,Ngr);
-        save(SaveStr,'AveNemMatFit', 'AveNemMatPde','StdNemMatPde',...
-            'bcVec','NgrVec','L_rod','v0', 'SaveMe','trial')
-    end
+    end %end bc loop
     
+    NloopRunTime = toc(ticTemp);
+    
+    
+    fprintf('N = %d took %f sec\n',Nx,NloopRunTime)
     % subtrial   = subtrial + 1;  % Just for input file
 end %end v0 loop
 
 if SaveMe
-    
     SaveStr = sprintf('OPvsGridBCmatsBcNum%dNnum%d',Nbc,Ngr);
     save(SaveStr,'AveNemMatFit', 'AveNemMatPde','StdNemMatPde',...
-        'bcVec','NgrVec','L_rod','v0', 'SaveMe','trial')
+        'bcVec','NgrVec','L_box','v0', 'SaveMe','trial')
 end
 
 if PlotMe
-    Lx = 1;
     AveNemPlotterBCandNgr(AveNemMatFit,AveNemMatPde,StdNemMatPde,...
-        bcVec,NgrVec,Lx,L_rod,v0, SaveMe,trial)
+        bcVec,NgrVec,L_box,v0, SaveMe,trial)
 end
 
 if SaveMe
-        
+    
     FileDir  = sprintf('AveNemBcNum%dNnum%dt%d',Nbc,Ngr,trial);
     Where2SavePath    = sprintf('%s/%s/%s',pwd,'Outputs',FileDir);
     

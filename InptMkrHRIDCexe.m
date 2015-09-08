@@ -125,7 +125,8 @@ end
 if Run == 1
     tic
 %     keyboard
-    [DenFinal, DenFTFinal, GridObj, ParamObj,TimeObj,DidIBreak,SteadyState] = ...
+    [DenFinal, DenFTFinal, GridObj, ParamObj,TimeObj,...
+        DidIBreak,SteadyState,MaxReldRho] = ...
         HR2DrotMainDrIDCube(FileInpt);
     if SaveMe
       mkdir Outputs
@@ -137,7 +138,8 @@ if Run == 1
       movefile('*.txt', Where2SavePath)
     end
     toc
-    fprintf('Break = %d Steady = %d\n',DidIBreak,SteadyState)
+    fprintf('Break = %d Steady = %d Max dRho/Rho = %.2e\n',...
+        DidIBreak,SteadyState,MaxReldRho)
     diary off
 %     cd /home/mws/Documents/MATLAB/Research/BG/DDFT/HRddft/Drive/IsoDiffCube
 end
