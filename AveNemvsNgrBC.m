@@ -66,6 +66,17 @@ for i = 1:Ngr
     FinalDenRec = zeros(Nx,Ny,Nm,Nbc);
     %     keyboard
     
+    if SaveMe
+            if i == 1 && j == 1
+                mkdir Outputs
+                DiaryStr = sprintf('DiarySingRunt%d.txt',trial);
+                diary(DiaryStr);
+                disp('NgrVec');disp(NgrVec);disp('bcVec');disp(bcVec);
+                disp('Params');disp(ParamObj);disp('Time');disp(TimeObj);
+                diary off
+                SaveStr = sprintf('OPvsGridBCmatsBcNum%dNnum%d',Nbc,Ngr);
+            end
+    end
     ticTemp = tic;
     for j = 1:Nbc
         % Calculate the distribution, rho, and sigma at a specific concentration
@@ -97,16 +108,7 @@ for i = 1:Ngr
         [~,~,~,~,NOP,~,~] = OpCPNCalc(1,1,f,GridObj.phi,0,0,GridObj.phi);
         AveNemMatFit (i,j) = NOP;
         if SaveMe
-            if i == 1 && j == 1
-                mkdir Outputs
-                DiaryStr = sprintf('DiarySingRunt%d.txt',trial);
-                diary(DiaryStr);
-                disp('NgrVec');disp(NgrVec);disp('bcVec');disp(bcVec);
-                disp('Params');disp(ParamObj);disp('Time');disp(TimeObj);
-                diary off
-                SaveStr = sprintf('OPvsGridBCmatsBcNum%dNnum%d',Nbc,Ngr);
-            end
-           
+       
             save(SaveStr,'AveNemMatFit', 'AveNemMatPde','StdNemMatPde',...
                 'bcVec','NgrVec','L_box','v0', 'SaveMe','trial')
         end

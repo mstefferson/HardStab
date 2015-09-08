@@ -17,7 +17,7 @@ trial    = 54;
 %%%%%% Turn on/off interactions%%%%%%%%%
 Interactions = 1; 
 SaveMe       = 1;   
-MakeMovies   = 0; % Movies won't run if save is zero
+MakeMovies   = 1; % Movies won't run if save is zero
 MakeOP       = 1;
 %%%%%%%%%%%%% Box and Rod Parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%
 Nx      = 32;
