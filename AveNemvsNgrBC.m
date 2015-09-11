@@ -56,7 +56,10 @@ try
     if length(NgrVec) ~= Ngr
         Ngr = length(NgrVec);
     end
-    
+    if length(bcVec) ~= Nbc
+        bc = length(bcVec);
+    end
+     
     % Initialize some things
     AveNemMatPde         = zeros( Ngr, Nbc );
     AveNemMatFit         = zeros( Ngr, Nbc );
