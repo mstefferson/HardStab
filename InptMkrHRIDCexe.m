@@ -54,7 +54,10 @@ Mob_rot  = Mob_same;
 WeightPos      = 1e-2;   
 WeightAng      = 1e-2;    
 Random         = 1;       % Random perturbation coeffs
-bc             = 1.4;    % Dimensionless  scaled concentration
+% Dimensionless  scaled concentration bc > 1.501 or bc < 1.499 if 
+% perturbing about equilbrum
+bc             = 1.5001;    
+
 
 % Type of initial Condition
 IntGauss   = 0;
@@ -69,7 +72,13 @@ IntNemPw   = 0;    % Distribution from perturbing equil. dist.
 [IntDenType, IntDenIndicator] = ...
          IntDenIndicatorMaker(IntGauss,IntPw,IntSepPw,IntEqPw,...
          IntEqSepPw,IntLoad,IntNemPw);
-     
+
+     if IntEqPw == 1 || IntSepPw == 1
+         if 1.499 < bc && bc < 1.501
+             bc = 1.502;
+         end
+     end
+         
 if IntLoad
     IntDenName = sprintf('DenBlow2');
 else

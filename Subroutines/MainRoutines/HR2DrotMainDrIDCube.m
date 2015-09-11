@@ -11,7 +11,8 @@ function [DenFinal, DenFTFinal, GridObj, ParamObj,TimeObj,...
 % Add paths (this should already be added, but just to be careful)
 % Save error messages in file
 try
-    
+    EvolvedDen = 0;DenFinal = 0;DenFTFinal = 0;GridObj = 0;ParamObj = 0;
+    TimeObj = 0;DidIBreak = 0;SteadyState = 0;MaxReldRho = 0;
     %         keyboard
     tMainID  = tic;
     
@@ -79,8 +80,10 @@ try
 %     keyboard
     % Run the main code
     tBodyID      = tic;
+    
     [DenRecObj]  = HR2DrotDenEvolverFTBodyIDCube(...
         wfid,lfid,rho,ParamObj, TimeObj,GridObj,DiffMobObj);
+    EvolvedDen = 1;
     BodyRunTime  = toc(tBodyID);
     fprintf(lfid,'Made density object\n');
     fprintf(lfid,'Body Run Time = %f\n\n', BodyRunTime);
@@ -133,9 +136,7 @@ try
     if ParamObj.SaveMe
         MemObj = 0;
         % Save all parameters
-        PTMGDObj = struct('ParamObj',ParamObj,'TimeObj',TimeObj,...
-            'MemObj',MemObj,'GridObj',GridObj,...
-            'D_pos',DiffMobObj.D_pos,'D_rot',DiffMobObj.D_rot);
+        
         % Save everything. Save seperately for big files
         DenStr = sprintf('DenRec_%i',ParamObj.trial);
         TimeStr = sprintf('TimeObj_%i',ParamObj.trial);
@@ -168,28 +169,33 @@ try
     %         cd /home/mws/Documents/Research/BG/DDFT/Outputs
     %     end
     
-catch err %Catch errors and move them
-    %         keyboard
+catch err %Catch errors 
+            keyboard
     
-    ErrFileNmStr = sprintf('logFile%i.txt',ParamObj.trial);
+    ErrFileNmStr = sprintf('errFile%i.txt',ParamObj.trial);
     efid         = fopen(ErrFileNmStr,'a+');
     % write the error to file and to screen
     % first line: message
-    fprintf(efid,'%s', err.getReport('extended', 'hyperlinks','off')) ;
+%     fprintf(efid,'%s', err.getReport('extended', 'hyperlinks','off')) ;
     fprintf('%s', err.getReport('extended')) ;
+    disp(err.message);
     fclose(efid);
     fclose('all');
     
 %    keyboard
     if ParamObj.SaveMe
-        DenStr = sprintf('DenRec_%i',ParamObj.trial);
-        ParamStr = sprintf('PTMGD_%i',ParamObj.trial);
-        PTMGDObj = struct('ParamObj',ParamObj,'TimeObj',TimeObj,...
-            'GridObj',GridObj,'D_pos',DiffMobObj.D_pos,'D_rot',...
-            DiffMobObj.D_rot);
-        save(DenStr,'DenRecObj','-v7.3')
-        save(ParamStr,'PTMGDObj','-v7.3')
       
+        TimeStr = sprintf('TimeObj_%i',ParamObj.trial);
+        ParamStr = sprintf('ParamObj_%i',ParamObj.trial);
+        GridStr = sprintf('GridObj_%i',ParamObj.trial);
+       
+        save(TimeStr,'GridObj','-v7.3')
+        save(ParamStr,'ParamObj','-v7.3')
+        save(GridStr,'GridObj','-v7.3')
+        if EvolvedDen
+           DenStr = sprintf('DenRec_%i',ParamObj.trial);     
+           save(DenStr,'DenRecObj','-v7.3');
+        end
     end
     
 end %End try and catch

@@ -14,8 +14,9 @@
 %                   | a_2 a_4 ... a_{2Nc}|
 
 function [Coeff_best, CoeffMat] = CoeffCalcExpCos2D(Nc,phi,bc)
-if bc == 1.5
-    error('This problem does not like bc = 1.5')
+if 1.499 < bc && bc < 1.501
+%     keyboard
+    error('Initial equilibrium condition does not like bc = 1.5')
 end
 % Calculate the Legendre coefficients of the kernal
 d2nVec   = KernCoeffCalcHardRod2D(Nc);
