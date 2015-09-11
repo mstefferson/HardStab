@@ -40,7 +40,8 @@ try
     
     % Build vecs
     bcVec = linspace(bc_start,bc_end,Nbc);
-    
+    bcVec = [1.4 1.4375 1.475 1.5125 1.5875]; 
+   
     dN = 2 * floor( (Ngr_end-N_approxstart) / ( 2*(Ngr-1) ) );
     NgrVec = Ngr_end - dN*(Ngr-1) : dN : Ngr_end;
     
