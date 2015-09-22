@@ -59,8 +59,6 @@ OvrLpEleSrc = abs(XposAtIntsct) < L_rod/2  + tolerance ;
 OvrLpEleTestRngAbv = XposAtIntsct >= Xmin;
 OvrLpEleTestRngBlw = XposAtIntsct <= Xmax;
 
-
-
 %find all the common points (matrix indexing) that are not 0
 %Adding all matrices should give a 5 if all criteria is met
 SumHolder = OvrLpEleTestRngBlw + OvrLpEleTestRngAbv + OvrLpEleSrc + Not2Far;

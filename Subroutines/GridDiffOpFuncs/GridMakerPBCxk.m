@@ -1,4 +1,4 @@
-function [GridObj] = GridMaker(Nx,Ny,Nm,Lx,Ly)
+function [GridObj] = GridMakerPBCxk(Nx,Ny,Nm,Lx,Ly)
 
 % Make pos grid spacings
 dx   = Lx/Nx;              
