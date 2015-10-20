@@ -7,7 +7,7 @@ addpath( genpath( CurrentDir) );
 
 Interactions = 1;
 Diffusion    = 1;
-AnisoDiff    = 0;
+AnisoDiff    = 1;
 PerturbGen   = 1;
 SparseMat    = 0;
 SaveMe       = 1;
@@ -15,8 +15,8 @@ SaveMe       = 1;
 xMode    = 0;
 yMode    = 1;
 
-NVaryStr = 'VaryNy';% VaryNx VaryNxNy VaryNm VaryAll
-NVec  = [32 64];
+NVaryStr = 'VaryAll';% VaryNx VaryNy VaryNxNy VaryNm VaryAll
+NVec  = [32 64 128 256];
 Nx    = 2^8;
 Ny    = Nx;
 Nm    = 2^8;
@@ -26,12 +26,13 @@ kyHolder = Ny/2+1 + yMode;
 
 vD           = 0;
 % bc           = 1.48;
-dbc   = 0.01;
-bcVec = [ 1.40:dbc:1.60 ];
-bcE   = 1.4;
+dbc   = 0.1;
+bcVec = [ 1.50:dbc:1.70 ];
+bcE   = 1.6;
 
 maxRealEigVal = zeros( length(NVec),length(bcVec) ); %include extra ind
 maxImagEigVal = zeros( length(NVec),length(bcVec)  );
+MaxEig = 10; % Guess at Max eigenvalue
 
 L_rod   = 1;
 Lx      = 10;
@@ -106,7 +107,7 @@ for i = 1:length(NVec)
     end
 end
 
-
+% keyboard
 ParamStr1 = ...
     sprintf('N = %d\nLrod = %d\nLx = %.1f\nbcE  = %.2e\n',...
       Nm, L_rod,Lx,bcE);
@@ -115,7 +116,8 @@ ParamStr2 = ...
       xMode,yMode,AnisoDiff,PerturbGen);
  
 EigPlotBcN(bcVec,NVec,bcE,maxRealEigVal,maxImagEigVal,...
-    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen,NVaryStr);
+    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen,...
+    NVaryStr,MaxEig);
 
 function GridObj = DispGridMaker(Nx,Ny,Nm,Lx,Ly)
 

@@ -19,14 +19,15 @@ Nx    = 2^8;
 Ny    = Nx;
 Nm    = 2^8;
 
-dbc   = 0.1;
-bcVec = [ 1.40:dbc:1.80 ];
-dvD   = 25;
-vDVec = [0:dvD:50];
+dbc   = 0.01;
+bcVec = [ 1.50:dbc:1.70 ];
+dvD   = 5;
+vDVec = [0:dvD:200];
 bcE   = 1.6;
 
 maxRealEigVal = zeros( length(vDVec)+1,length(bcVec)+1 ); %include extra ind
 maxImagEigVal = zeros( length(vDVec)+1,length(bcVec)+1  );
+Eigmax = 6; %Guess at largest Eigenvalue
 
 kxHolder = Nx/2+1 + xMode;
 kyHolder = Ny/2+1 + yMode;
@@ -88,7 +89,7 @@ ParamStr2 = ...
       xMode,yMode,AnisoDiff,PerturbGen);
  
 EigPlotBcVd(bcVec,dbc,vDVec,dvD,bcE,maxRealEigVal,maxImagEigVal,...
-    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen)
+    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen,Eigmax)
      
 % figure
 

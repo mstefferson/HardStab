@@ -15,12 +15,12 @@ ModeX    = 1;
 ModeY    = 0;
 
 vD    = 0;
-bcE   = 1.4; % Equilbirum bc
-bcP   = 1.4; % Perturbation bc
+bcE   = 1.6; % Equilbirum bc
+bcP   = 1.6; % Perturbation bc
 
 Nx    = 2^8;
 Ny    = Nx;
-Nm    = 2^8;
+Nm    = 2^11;
 
 kxHolder = Nx/2+1 + ModeX;
 kyHolder = Ny/2+1 + ModeY;
@@ -54,32 +54,6 @@ ParamObj = struct('Nx',Nx,'Ny',Ny,'Nm',Nm,'Lx',Lx,'Ly',Ly,'L_rod',L_rod,...
 
 GridObj = DispGridMaker(...
     ParamObj.Nx,ParamObj.Ny,ParamObj.Nm,ParamObj.Lx,ParamObj.Ly);
-
-if 0
-        Fm = MayerFncDiffBtwPntsCalc(...
-        ParamObj.Nx, ParamObj.Ny, ParamObj.Nm, ...
-        ParamObj.Lx, ParamObj.Ly, GridObj.dx,...
-        GridObj.dy, GridObj.dphi, ParamObj.L_rod);
-    Fm_FT = fftshift(fftn( Fm ) );
-    
-    
-    mInd = 256;
-    Sum = 0;
-    for i = 1:Nx
-        for  j = 1:Ny
-       Sum = Sum + Fm_FT(i,j,mInd);     
-        end
-    end
-    Sum
-     (Sum + Nx*Ny*Nm) ./ (Sum)
-     
-    
-    keyboard
-end
-% [M,DiffContrib,IntDiagContrib,eigVals] = DispEigCalcTemp(DiffMobObj,GridObj,ParamObj,Interactions,Diffusion,...
-%     SparseMat ,kxHolder,kyHolder);
-% disp('Old meth');disp( max( real( eigVals ) ) )
-
 
 if PerturbGen
 [eigVals] = ...

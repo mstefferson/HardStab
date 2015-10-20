@@ -1,5 +1,5 @@
 function EigPlotBcVd(bcVec,dbc,vDVec,dvD,bcE,maxRealEigVal,maxImagEigVal,...
-    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen)
+    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen,Cmax)
 figure
 subplot(2,1,1)
 pcolor( [bcVec bcVec(end)+dbc] ,[vDVec vDVec(end) + dvD],...
@@ -48,7 +48,7 @@ figure
 % pcolor( [bcVec bcVec(end)+dbc] ,1:length(vDVec)+1,NemSol)
 pcolor( [bcVec bcVec(end)+dbc] ,[vDVec vDVec(end) + dvD],NemSol)
 Ax = gca;
-Ax.CLim = [0 3];
+Ax.CLim = [0 Cmax];
 % Ax.YTick = [1:length(vDVec)+1];
 % Ax.YTickLabel = num2cell( [vDVec vDVec(end) * dvD]);
 colorbar

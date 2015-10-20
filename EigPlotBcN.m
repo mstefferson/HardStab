@@ -1,10 +1,10 @@
 function EigPlotBcN(bcVec,NVec,bcE,maxRealEigVal,maxImagEigVal,...
-    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen,NVaryStr)
+    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen,NVaryStr,MaxEig)
 figure
 subplot(2,1,1)
 plot(bcVec,maxRealEigVal)
 Ax = gca;
-Ax.YLim = [0 5];
+Ax.YLim = [0 MaxEig];
 legendCell = cellstr(num2str(NVec', 'N=%-d'));
 legend(legendCell)
 
