@@ -1,4 +1,4 @@
-%% Isotropic!
+%% Perturb about an Isotropic!
 % close all
 function DrivenDispCheck
 
@@ -7,43 +7,66 @@ addpath( genpath( CurrentDir) );
 
 Interactions = 1;
 Diffusion    = 1;
+AnisoDiff    = 1;
 SparseMat    = 0;
-vD           = 0;
-bc           = 1.48;
+SaveMe       = 0;
+
+ModeX    = 0;
+ModeY    = 1;
+
+vD    = 10;
+bc    = 1.40;
 
 Nx    = 2^8;
 Ny    = Nx;
 Nm    = 2^8;
 
-kxHolder = Nx/2+1;
-kyHolder = Nx/2+1;
+kxHolder = Nx/2+1 + ModeX;
+kyHolder = Ny/2+1 + ModeY;
 
-L_rod = 1;
-Lx    = 10;
-Ly    = Lx;
-Mob_pos = 1;
-Mob_rot = 6 *Mob_pos/(L_rod^2);
+L_rod   = 1;
+Lx      = 10;
+Ly      = Lx;
+Mob_0   = 1;
 
-D_pos = Mob_pos;
-D_rot = Mob_rot;
+Mob_par  = 2 * Mob_0;
+Mob_perp = Mob_0;
+Mob_rot = 6 *Mob_par/(L_rod^2);
 
-% calculate bc
-b     = L_rod^2/pi;               % Average excluded volume per particle
-c     = bc / b;                   % Concentration
+D_par = Mob_par;
 
-DiffMobObj = struct('Mob_pos', Mob_pos,'D_pos',D_pos,'Mob_rot', Mob_rot,'D_rot',D_rot);
+if AnisoDiff;
+    D_perp = Mob_perp;
+    D_rot = Mob_rot;
+else
+    D_par  = 1;
+    D_perp = D_par;
+    D_rot  = D_par;
+end
 
-GridObj = DispGridMaker(Nx,Ny,Nm,Lx,Ly);
 
+DiffMobObj = struct('Mob_par', Mob_par,'D_par',D_par,'D_perp',D_perp,...
+    'Mob_rot', Mob_rot,'D_rot',D_rot);
+  
 ParamObj = struct('Nx',Nx,'Ny',Ny,'Nm',Nm,'Lx',Lx,'Ly',Ly,'L_rod',L_rod,...
     'bc',bc,'vD',vD);
 
-[eigVals] = DispEigCalc(DiffMobObj,GridObj,ParamObj,Interactions,Diffusion,...
+    GridObj = DispGridMaker(...
+        ParamObj.Nx,ParamObj.Ny,ParamObj.Nm,ParamObj.Lx,ParamObj.Ly);
+
+[eigVals] = DispEigCalcIsoSS(DiffMobObj,GridObj,ParamObj,Interactions,Diffusion,...
     SparseMat ,kxHolder,kyHolder);
+% disp( max(real(eigVals) ) )
+% keyboard
+figure()
+subplot(2,1,1)
+plot(sort(real(eigVals)))
+% plot( real(eigVals) )
 
-maxEigVal = max( real( eigVals ) );
-disp(maxEigVal)
+subplot(2,1,2)
+plot(sort( imag(eigVals) ))
 
+% keyboard
 % disp(maxEigVal)
 % %%%%%%%%%%%%%%Plot Eigenvalues%%%%%%%%%%%%%%%%%%%%
 % figure
@@ -91,4 +114,3 @@ km               = ( -km_max: dkm: (km_max - dkm) );
 %Put it all in an object
 GridObj = struct('x',x,'y',y,'phi',phi,'dx',dx,'dy',dy,'dphi',dphi,...
     'kx',kx,'ky',ky,'km',km);
-
