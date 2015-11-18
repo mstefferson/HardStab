@@ -12,15 +12,15 @@ PerturbGen   = 0;
 SaveMe       = 0;
 
 ModeX    = 1;
-ModeY    = 0;
+ModeY    = 1;
 
 vD    = 0;
-bcE   = 1.6; % Equilbirum bc
+bcE   = 1.4; % Equilbirum bc
 bcP   = 1.6; % Perturbation bc
 
-Nx    = 2^8;
+Nx    = 2^6;
 Ny    = Nx;
-Nm    = 2^11;
+Nm    = 2^6;
 
 kxHolder = Nx/2+1 + ModeX;
 kyHolder = Ny/2+1 + ModeY;
@@ -56,27 +56,82 @@ GridObj = DispGridMaker(...
     ParamObj.Nx,ParamObj.Ny,ParamObj.Nm,ParamObj.Lx,ParamObj.Ly);
 
 if PerturbGen
-[eigVals] = ...
+[eigVecs,eigVals] = ...
     DispEigCalcGen(DiffMobObj,GridObj,ParamObj,...
     kxHolder,kyHolder,Interactions);
 else
-    [eigVals] = ...
+    [eigVecs,eigVals] = ...
     DispEigCalcIsoSS(DiffMobObj,GridObj,ParamObj,Interactions,Diffusion,...
     SparseMat,kxHolder,kyHolder);
 end
 
-max( real(eigVals) )
+max( real( diag( eigVals ) ) )
 % keyboard
-eigValsGenR = sort( real( eigVals) );
-eigValsGenI = sort( imag( eigVals) );
+eigValsGenR = sort( real( diag(eigVals) ) );
+eigValsGenI = sort( imag( diag(eigVals) ) );
 
+% plot( real( ( diag(eigVals) ) ) )
 % keyboard
-plotyy(1:Nm, [ eigValsGenR ],...
-    1:Nm, [ eigValsGenI ])
+% plotyy(1:Nm, [ eigValsGenR ],1:Nm, [ eigValsGenI ])
 legend('real','imag')
 
-% keyboard
+[FmDistBtwnPts] = ...
+    MayerFncDiffBtwPntsCalc(Nx, Ny, Nm, Lx, Ly, GridObj.dx, GridObj.dy, GridObj.dphi, L_rod);
+    
+    Fm_FT = fftshift( fftn( FmDistBtwnPts ) );
+ 
+ %%  
+ kxHolder = Nx/2  + 1 - 1;
+ kyHolder = Ny/2  + 1;
+ kmHolder = Nm/2  + 1 - 2;
+ 
+ EigContrFixed = -( GridObj.kx(kxHolder )^2 + GridObj.ky( kyHolder )^2 + GridObj.km(kmHolder)^2 ) .* ...
+ (1 -  ( ParamObj.bcP * pi * Lx * Ly) / (Nx * Ny * Nm * L_rod ^2) * Fm_FT(kxHolder, kyHolder ,kmHolder) )   
 
+%%
+ kxHolder = Nx/2  + 1;
+ kyHolder = Ny/2  + 1;
+ 
+Range = 11;
+ LowB = Nm/2 + 1 - (Range - 1)/2;
+ UpB = Nm/2 + 1 + (Range - 1)/2;
+
+ EigContr =  ...
+     -(1 -  ( ParamObj.bcP * pi * Lx * Ly) / (Nx * Ny * Nm * L_rod ^2) *...
+     Fm_FT(kxHolder, kyHolder ,LowB:UpB) );   
+
+ 
+plot( reshape( real( EigContr), [1, Range ] ) )
+%%
+
+
+Range    = 11;
+LowB     = Nx/2 + 1 - (Range-1) / 2 ;
+UpperB   = Nx/2 + 1 + (Range-1) / 2;
+kmHolder = Nm/2 +3 ;
+
+xSubSet  = LowB:UpperB;
+
+EigKgrid = zeros(Range,Range);
+
+for i = 1:Range
+    for j = 1:Range
+        
+        EigKgrid(i,j) = -(1 -  ( ParamObj.bcP * pi * Lx * Ly) / (Nx * Ny * Nm * L_rod ^2) *...
+            real( Fm_FT( xSubSet(i) , xSubSet(j) , kmHolder ) ) );
+        
+    end
+end
+
+% real( EigKgrid) > 0
+
+
+pcolor(EigKgrid)
+colorbar
+
+keyboard
+
+%%
 function GridObj = DispGridMaker(Nx,Ny,Nm,Lx,Ly)
 
 dx   = Lx/Nx;

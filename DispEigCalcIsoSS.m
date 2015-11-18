@@ -1,4 +1,4 @@
-function [eigVals] = ...
+function [eigVecs,eigVals] = ...
     DispEigCalcIsoSS(DiffMobObj,GridObj,ParamObj,Interactions,Diffusion,...
     SparseMat,kxHolder,kyHolder)
 
@@ -87,7 +87,7 @@ if SparseMat == 1
     M(ParamObj.Nm,2) = Mp2PreFac .* ...
         (1 -IntPreFac .* Fm_FT(kxHolder,kyHolder,Nm)  );
     
-    [eigVals] = eigs(M,Nm-1,'lm');
+    [eigVecs,eigVals] = eigs(M,Nm-1,'lm');
     
 else
     M =  diag( MdiagVec) +...
@@ -110,7 +110,7 @@ else
     
     
     %     keyboard
-    [eigVals] = eig(M);
+    [eigVecs,eigVals] = eig(M);
 end
 
 

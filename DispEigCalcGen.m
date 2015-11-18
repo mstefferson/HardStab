@@ -1,4 +1,4 @@
-function [eigVals] = ...
+function [eigVecs,eigVals] = ...
     DispEigCalcGen(DiffMobObj,GridObj,ParamObj,...
     kxHolder,kyHolder,Interactions)
 
@@ -209,7 +209,7 @@ end
     
 %   keyboard 
         
-    [eigVals] = eig(M);
+    [eigVecs,eigVals] = eig(M);
 
 % keyboard
 end

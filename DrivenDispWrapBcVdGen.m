@@ -1,4 +1,4 @@
-%% Isotropic!
+%% Gen perturb or perturb iso!
 % close all
 function DrivenDispWrapBcVdGen
 
@@ -8,26 +8,26 @@ addpath( genpath( CurrentDir) );
 Interactions = 1;
 Diffusion    = 1;
 SparseMat    = 0;
-AnisoDiff    = 1;
+AnisoDiff    = 0;
 PerturbGen   = 1;
 SaveMe       = 1;
 
-xMode    = 1;
-yMode    = 0;
+xMode    = 0;
+yMode    = 1;
 
-Nx    = 2^8;
+Nx    = 2^7;
 Ny    = Nx;
-Nm    = 2^8;
+Nm    = 2^7;
 
 dbc   = 0.01;
 bcVec = [ 1.50:dbc:1.70 ];
 dvD   = 5;
-vDVec = [0:dvD:200];
+vDVec = [0:dvD:50];
 bcE   = 1.6;
 
 maxRealEigVal = zeros( length(vDVec)+1,length(bcVec)+1 ); %include extra ind
 maxImagEigVal = zeros( length(vDVec)+1,length(bcVec)+1  );
-Eigmax = 6; %Guess at largest Eigenvalue
+Eigmax = 3; %Guess at largest Eigenvalue
 
 kxHolder = Nx/2+1 + xMode;
 kyHolder = Ny/2+1 + yMode;
@@ -66,24 +66,24 @@ for i = 1:length(vDVec)
         ParamObj.bcP = bcVec(j);
         
         if PerturbGen
-       [eigVals] = ...
+       [eigVecs,eigVals] = ...
     DispEigCalcGen(DiffMobObj,GridObj,ParamObj,...
     kxHolder,kyHolder,Interactions);
         else
-            [eigVals] = ...
+            [eigVecs,eigVals] = ...
     DispEigCalcIsoSS(DiffMobObj,GridObj,ParamObj,Interactions,Diffusion,...
     SparseMat,kxHolder,kyHolder);
         end
-        maxRealEigVal(i,j) = max( real( eigVals ) );
-        maxImagEigVal(i,j) = max( imag( eigVals ) );
+        maxRealEigVal(i,j) = max( real( diag(eigVals) ) );
+        maxImagEigVal(i,j) = max( imag( diag(eigVals) ) );
 %         keyboard
     end       
 end
 
 % keyboard
 ParamStr1 = ...
-    sprintf('N = %d\nLrod = %d\nLx = %.1f\nbcE  = %.2e\n',...
-      Nm, L_rod,Lx,bcE);
+    sprintf('Ns = %d\nNm = %d\nLrod = %d\nLx = %.1f\nbcE  = %.2e\n',...
+      Nx,Nm, L_rod,Lx,bcE);
 ParamStr2 = ...
     sprintf('kx = %d\nky = %d\nAnisoDiff = %d\nPerturbGen = %d ',...
       xMode,yMode,AnisoDiff,PerturbGen);
