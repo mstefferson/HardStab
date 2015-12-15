@@ -7,7 +7,7 @@
 % What's being used with the c++ code. See if it's in the trapezoid
 
 
-function [MayerFnc] = MayerFncDiffBtwPntsCalc2(Nx, Ny, Nm, Lx, Ly, Lrod)
+function [MayerFnc] = MayerFncDiffBtwPntsCalc(Nx, Ny, Nm, Lx, Ly, Lrod)
 
 
 MayerFnc = zeros(Nx,Ny,Nm);

@@ -2,7 +2,7 @@
 
 % Calculated by calculating the Mayer funciton for a hard rod at the origin
 % with its orientation angle being zero.
-function [FmDistBtwnPts] = MayerFncDiffBtwPntsCalc(Nx, Ny, Nm, Lx, Ly, dx, dy, dphi, L_rod)
+function [FmDistBtwnPts] = MayerFncDiffBtwPntsCalcOld(Nx, Ny, Nm, Lx, Ly, dx, dy, dphi, L_rod)
 
 % Vector of position/ang differences
 % Handle even and odd rods differently
