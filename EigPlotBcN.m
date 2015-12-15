@@ -10,7 +10,7 @@ legend(legendCell)
 
 xlabel('bc');ylabel('Max Real Eig Val');
 if PerturbGen
-    str2 = sprintf(': Gen bcE = %.2e', bcE);
+    str2 = sprintf(': Gen bcE = %.2f', bcE);
     titstr = [NVaryStr str2];
 else
     titstr = [NVaryStr ': about Iso'];

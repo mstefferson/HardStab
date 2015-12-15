@@ -1,5 +1,5 @@
 function EigPlotBcVd(bcVec,dbc,vDVec,dvD,bcE,maxRealEigVal,maxImagEigVal,...
-    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen,Cmax)
+    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen,Cmax,N)
 figure
 subplot(2,1,1)
 pcolor( [bcVec bcVec(end)+dbc] ,[vDVec vDVec(end) + dvD],...
@@ -11,7 +11,7 @@ Ax.CLim = [-6 3];
 colorbar
 xlabel('bc');ylabel('vD');
 if PerturbGen
-    titstr =  sprintf(' Max Real Eigenvalue about Gen bc = %.2e ',bcE);
+    titstr =  sprintf(' Max Real Eigenvalue about Gen bc = %.2f ',bcE);
 else
     titstr =  ' Max Real Eigenvalue about Iso';
 end
@@ -33,9 +33,13 @@ textbp(ParamStr2,'color','white');
 
 if SaveMe
     if PerturbGen
-        savestr = sprintf('EigsVsbcvDkx%dky%dAiD%dGen',xMode,yMode,AnisoDiff);
+        if bcE >= 1.5
+        savestr = sprintf('EigsVsbcvDkx%dky%dAiD%dGenN%d',xMode,yMode,AnisoDiff,N);
+        else
+        savestr = sprintf('EigsVsbcvDkx%dky%dAiD%dGenI%d',xMode,yMode,AnisoDiff,N);    
+        end
     else
-        savestr = sprintf('EigsVsbcvDkx%dky%dAiD%dIso',xMode,yMode,AnisoDiff);
+        savestr = sprintf('EigsVsbcvDkx%dky%dAiD%dIso%d',xMode,yMode,AnisoDiff,N);
     end
     savefig(gcf,savestr)
 end
@@ -54,7 +58,7 @@ Ax.CLim = [0 Cmax];
 colorbar
 xlabel('bc');ylabel('vD');
 if PerturbGen
-    titstr =  sprintf(' Max Real Eigenvalue about Gen bc = %.2e ',bcE);
+    titstr =  sprintf(' Max Real Eigenvalue about Gen bc = %.2f ',bcE);
 else
     titstr =  ' Max Real Eigenvalue about Iso';
 end
@@ -65,9 +69,14 @@ textbp(ParamStr2,'color','white');
 
 if SaveMe
      if PerturbGen
-        savestr = sprintf('MaxEigsVsbcvDkx%dky%dAiD%dGen',xMode,yMode,AnisoDiff);
+         if bcE >= 1.5    
+             savestr = sprintf('MaxEigsVsbcvDkx%dky%dAiD%dGenN%d',xMode,yMode,AnisoDiff,N);
+         else
+             savestr = sprintf('MaxEigsVsbcvDkx%dky%dAiD%dGenI%d',xMode,yMode,AnisoDiff,N);
+         end
+        
     else
-        savestr = sprintf('MaxEigsVsbcvDkx%dky%dAiD%dIso',xMode,yMode,AnisoDiff);
+        savestr = sprintf('MaxEigsVsbcvDkx%dky%dAiD%dIso%d',xMode,yMode,AnisoDiff,N);
      end
     savefig(gcf,savestr)
 end

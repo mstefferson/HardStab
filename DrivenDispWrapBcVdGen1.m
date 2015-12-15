@@ -1,6 +1,6 @@
 %% Gen perturb or perturb iso!
 % close all
-function DrivenDispWrapBcVdGen
+function DrivenDispWrapBcVdGen1
 
 CurrentDir = pwd;
 addpath( genpath( CurrentDir) );
@@ -19,9 +19,9 @@ Nx    = 2^8;
 Ny    = Nx;
 Nm    = 2^8;
 
-dbc   = 0.01;
+dbc   = 0.05;
 bcVec = [ 1.35:dbc:1.55 ];
-dvD   = 10;
+dvD   = 2;
 vDVec = [0:dvD:50];
 bcE   = 1.45;
 

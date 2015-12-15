@@ -1,6 +1,6 @@
 %% Gen perturb or perturb iso!
 % close all
-function DrivenDispWrapBcVdGen
+function DrivenDispWrapBcVdGen4
 
 CurrentDir = pwd;
 addpath( genpath( CurrentDir) );
@@ -15,15 +15,16 @@ SaveMe       = 1;
 xMode    = 1;
 yMode    = 0;
 
-Nx    = 2^8;
+Nx    = 2^6;
 Ny    = Nx;
-Nm    = 2^8;
+Nm    = 2^6;
 
-dbc   = 0.01;
-bcVec = [ 1.35:dbc:1.55 ];
-dvD   = 10;
+dbc   = 0.05;
+bcVec = [ 1.45:dbc:1.65 ];
+dvD   = 2;
 vDVec = [0:dvD:50];
-bcE   = 1.45;
+bcE   = 1.55;
+
 
 maxRealEigVal = zeros( length(vDVec)+1,length(bcVec)+1 ); %include extra ind
 maxImagEigVal = zeros( length(vDVec)+1,length(bcVec)+1  );

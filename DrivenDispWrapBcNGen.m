@@ -7,13 +7,13 @@ addpath( genpath( CurrentDir) );
 
 Interactions = 1;
 Diffusion    = 1;
-AnisoDiff    = 1;
+AnisoDiff    = 0;
 PerturbGen   = 1;
 SparseMat    = 0;
 SaveMe       = 1;
 
 xMode    = 0;
-yMode    = 1;
+yMode    = 0;
 
 NVaryStr = 'VaryAll';% VaryNx VaryNy VaryNxNy VaryNm VaryAll
 NVec  = [32 64 128 256];
@@ -26,9 +26,9 @@ kyHolder = Ny/2+1 + yMode;
 
 vD           = 0;
 % bc           = 1.48;
-dbc   = 0.1;
-bcVec = [ 1.50:dbc:1.70 ];
-bcE   = 1.6;
+dbc   = 0.05;
+bcVec = [ 1.20:dbc:1.60 ];
+bcE   = 1.4;
 
 maxRealEigVal = zeros( length(NVec),length(bcVec) ); %include extra ind
 maxImagEigVal = zeros( length(NVec),length(bcVec)  );
@@ -42,7 +42,7 @@ Mob_0   = 1;
 Mob_par  = 2 * Mob_0;
 Mob_perp = Mob_0;
 Mob_rot = 6 *Mob_par/(L_rod^2);
-
+Mob_rot  = Mob_par;
 D_par = Mob_par;
 
 if AnisoDiff;
@@ -51,6 +51,7 @@ else
     D_perp = D_par;
 end
 D_rot = Mob_rot;
+D_rot =  Mob_par;
 
 DiffMobObj = struct('Mob_par', Mob_par,'D_par',D_par,'D_perp',D_perp,...
     'Mob_rot', Mob_rot,'D_rot',D_rot);
@@ -93,24 +94,25 @@ for i = 1:length(NVec)
     for j = 1:length(bcVec)
         ParamObj.bcP = bcVec(j);
         if PerturbGen
-            [eigVals] = ...
+             [eigVecs,eigVals] = ...
                 DispEigCalcGen(DiffMobObj,GridObj,ParamObj,...
                 kxHolder,kyHolder,Interactions);       
         else
-            [eigVals] = DispEigCalcIsoSS(DiffMobObj,GridObj,...
+             [eigVecs,eigVals] = DispEigCalcIsoSS(DiffMobObj,GridObj,...
                 ParamObj,Interactions,Diffusion,...
                 SparseMat ,kxHolder,kyHolder);
         end
-        maxRealEigVal(i,j) = max( real( eigVals ) );
-        maxImagEigVal(i,j) = max( imag( eigVals ) );
+        maxRealEigVal(i,j) = max( real( diag(eigVals) ) );
+        maxImagEigVal(i,j) = max( imag( diag(eigVals) ) );
         %         keyboard
     end
+%     keyboard
 end
 
 % keyboard
 ParamStr1 = ...
-    sprintf('N = %d\nLrod = %d\nLx = %.1f\nbcE  = %.2e\n',...
-      Nm, L_rod,Lx,bcE);
+sprintf('N = %d\nLx = %.1f\nvD = %.1f\nbcE  = %.2f\n',...
+      Nm, Lx,vD,bcE);
 ParamStr2 = ...
     sprintf('kx = %d\nky = %d\nAnisoDiff = %d\nPerturbGen = %d ',...
       xMode,yMode,AnisoDiff,PerturbGen);

@@ -1,30 +1,34 @@
-%% Isotropic!
+%% Gen perturb or perturb iso!
 % close all
-function DrivenDispWrapBcVd
+function DrivenDispWrapBcVdGen3
 
 CurrentDir = pwd;
 addpath( genpath( CurrentDir) );
 
 Interactions = 1;
 Diffusion    = 1;
-AnisoDiff    = 1;
 SparseMat    = 0;
+AnisoDiff    = 0;
+PerturbGen   = 1;
 SaveMe       = 1;
+
 
 xMode    = 1;
 yMode    = 0;
 
-Nx    = 2^8;
+Nx    = 2^6;
 Ny    = Nx;
-Nm    = 2^8;
+Nm    = 2^6;
 
-dbc   = 0.01;
-bcVec = [ 1.40:dbc:1.60 ];
-dvD   = 5;
+dbc   = 0.05;
+bcVec = [ 1.35:dbc:1.55 ];
+dvD   = 2;
 vDVec = [0:dvD:50];
+bcE   = 1.45;
 
 maxRealEigVal = zeros( length(vDVec)+1,length(bcVec)+1 ); %include extra ind
 maxImagEigVal = zeros( length(vDVec)+1,length(bcVec)+1  );
+Eigmax = 3; %Guess at largest Eigenvalue
 
 kxHolder = Nx/2+1 + xMode;
 kyHolder = Ny/2+1 + yMode;
@@ -51,7 +55,7 @@ DiffMobObj = struct('Mob_par', Mob_par,'D_par',D_par,'D_perp',D_perp,...
     'Mob_rot', Mob_rot,'D_rot',D_rot);
 
 ParamObj = struct('Nx',Nx,'Ny',Ny,'Nm',Nm,'Lx',Lx,'Ly',Ly,'L_rod',L_rod,...
-    'bc',bcVec(1),'vD',vDVec(1));
+    'bcP',bcVec(1),'bcE',bcE,'vD',vDVec(1));
 [GridObj] = DispGridMaker(...
         ParamObj.Nx,ParamObj.Ny,ParamObj.Nm,ParamObj.Lx,ParamObj.Ly);
 % keyboard
@@ -60,28 +64,34 @@ for i = 1:length(vDVec)
     ParamObj.vD = vDVec(i);
     
     for j = 1:length(bcVec)
-        ParamObj.bc = bcVec(j);
-        [eigVals] = DispEigCalcIsoSS(DiffMobObj,GridObj,...
-            ParamObj,Interactions,Diffusion,...
-            SparseMat ,kxHolder,kyHolder);
-        maxRealEigVal(i,j) = max( real( eigVals ) );
-        maxImagEigVal(i,j) = max( imag( eigVals ) );
+        ParamObj.bcP = bcVec(j);
+        
+        if PerturbGen
+       [eigVecs,eigVals] = ...
+    DispEigCalcGen(DiffMobObj,GridObj,ParamObj,...
+    kxHolder,kyHolder,Interactions);
+        else
+            [eigVecs,eigVals] = ...
+    DispEigCalcIsoSS(DiffMobObj,GridObj,ParamObj,Interactions,Diffusion,...
+    SparseMat,kxHolder,kyHolder);
+        end
+        maxRealEigVal(i,j) = max( real( diag(eigVals) ) );
+        maxImagEigVal(i,j) = max( imag( diag(eigVals) ) );
 %         keyboard
     end       
 end
 
 % keyboard
-
 ParamStr1 = ...
-    sprintf('N = %d\nLrod = %d\nLx = %.1f\nbcE  = %.2e\n',...
-      Nm, L_rod,Lx,bcE);
+    sprintf('Ns = %d\nLx = %.1f\nbcE  = %.2f\n',...
+      Nx,Lx,bcE);
 ParamStr2 = ...
     sprintf('kx = %d\nky = %d\nAnisoDiff = %d\nPerturbGen = %d ',...
       xMode,yMode,AnisoDiff,PerturbGen);
-
-EigPlotBcVdIso(bcVec,dbc,vDVec,dvD,maxRealEigVal,maxImagEigVal,...
-    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff)
-% 
+ 
+EigPlotBcVd(bcVec,dbc,vDVec,dvD,bcE,maxRealEigVal,maxImagEigVal,...
+    ParamStr1,ParamStr2,SaveMe,xMode,yMode,AnisoDiff,PerturbGen,Eigmax,Nm)
+     
 % figure
 
 function GridObj = DispGridMaker(Nx,Ny,Nm,Lx,Ly)
