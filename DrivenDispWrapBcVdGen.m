@@ -8,22 +8,22 @@ addpath( genpath( CurrentDir) );
 Interactions = 1;
 Diffusion    = 1;
 SparseMat    = 0;
-AnisoDiff    = 0;
+AnisoDiff    = 1;
 PerturbGen   = 1;
 SaveMe       = 1;
 
 xMode    = 1;
 yMode    = 0;
 
-Nx    = 2^8;
+Nx    = 2^7;
 Ny    = Nx;
-Nm    = 2^8;
+Nm    = 2^7;
 
-dbc   = 0.01;
-bcVec = [ 1.35:dbc:1.55 ];
-dvD   = 10;
+dbc   = 0.1;
+bcVec = [ 1.55:dbc:1.75 ];
+dvD   = 5;
 vDVec = [0:dvD:50];
-bcE   = 1.45;
+bcE   = 1.75;
 
 maxRealEigVal = zeros( length(vDVec)+1,length(bcVec)+1 ); %include extra ind
 maxImagEigVal = zeros( length(vDVec)+1,length(bcVec)+1  );
